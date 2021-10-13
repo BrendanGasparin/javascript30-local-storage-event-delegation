@@ -22,6 +22,7 @@
     <form class="add-items">
       <input type="text" name="item" placeholder="Item Name" required />
       <input type="submit" value="+ Add Item" />
+      <input type="button" value="Clear All" />
     </form>
   </div>
 
@@ -29,6 +30,7 @@
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
   const items = JSON.parse(localStorage.getItem('items')) || [];  // populate array from local storage OR an empty array
+  const clearButton = document.querySelector('[type=button]');
 
   function addItem(e) {
     e.preventDefault();
@@ -56,13 +58,21 @@
   }
 
   function toggleDone(e) {
-    if(!e.target.matches('input')) return;  // skip this unless it's an input (to ignore the list listener firing)
+    if(!e.target.matches('input[type=checkbox]')) return;  // skip this unless it's an input (to ignore the list listener firing)
     const el = e.target;
     const index = el.dataset.index;
     items[index].done = !items[index].done;
     localStorage.setItem('items', JSON.stringify(items)); // stringify turns array of objects into string
     populateList(items, itemsList);
   }
+
+  function clearList(e) {
+    while(items[0]) items.pop();
+    window.localStorage.clear();
+    populateList(items, itemsList);
+  }
+
+  clearButton.addEventListener('click', clearList);
 
   addItems.addEventListener('submit', addItem);
   
